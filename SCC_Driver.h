@@ -18,9 +18,10 @@
 #define SCC_DRIVER_H
 
 // Robotic arm link lengths
-#define L2 7.375
+//#define L2 7.375
+#define L2 5.875
 #define L3 9.375
-#define L4 4.25
+#define L4 4.65
 
 // Scaling coefficients used in polynomial regression for calibration of arm
 
@@ -91,4 +92,3 @@ int getCommand(void);
 
 
 #endif
-

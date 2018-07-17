@@ -52,10 +52,28 @@ void toConfiguration(float angles[], int duration){
 		the equation convert the joint space into actuator space, from degree to microsecond
 		adjust the first value to off set the servo rotation
 	*/
-  outputs[0] = (470 + angles[0]*(2220-500)/180);
-  outputs[1] = (750 + angles[1]*(1600-750)/90);
-  outputs[2] = (600 + angles[2]*(1700-830)/90);
-  outputs[3] = (1010 + angles[3]*(2475-660)/180);//1010
+	//set 1
+  // outputs[0] = (560 + angles[0]*(2220-500)/180);//(500,2265)
+  // outputs[1] = (750 + angles[1]*(1600-750)/90);
+  // outputs[2] = (600 + angles[2]*(1700-830)/90);
+  // outputs[3] = (1010 + angles[3]*(2475-660)/180);//1010
+  
+    //set 2
+  //outputs[0] = (500 + angles[0]*(2265-500)/180);//(500,2265)
+  //outputs[1] = (1370 + angles[1]*(1800-1000)/180);// (1000,1800)......(2270,2225) was 970 with 90
+  //outputs[2] = (1050 +  angles[2]*(1700-500)/180);//343:1700 : 97/:830   divide by 110 was 120 with 90
+  //outputs[3] = (540 + angles[3]*(2500-555)/180);//580;0----0
+  
+  //set3 
+  //outputs[0] = (500 + angles[0]*(2265-500)/180);//(500,2265)
+  //outputs[1] = (710 + angles[1]*(2365-660)/180);// (1000,1800)......(2270,2225) was 970 with 90
+  //outputs[2] = (830 +  angles[2]*(2500-840)/180);//343:1700 : 97/:830   divide by 110 was 120 with 90
+  //outputs[3] = (540 + angles[3]*(2500-545)/180);//580;0----0
+   
+  outputs[0] = (500 + angles[0]*(2265-500)/180);//(500,2265)
+  outputs[1] = (710 + angles[1]*(2365-660)/180);// (1000,1800)......(2270,2225) was 970 with 90
+  outputs[2] = (830 +  angles[2]*(2500-840)/180);//343:1700 : 97/:830   divide by 110 was 120 with 90
+  outputs[3] = (540 + angles[3]*(2500-545)/180);//580;0----0
   
   
   // Note the format of the data being written to the Servo driver board should appear like so:
@@ -76,7 +94,7 @@ void toConfiguration(float angles[], int duration){
   Serial1.print(outputs[2]);
   Serial1.print("#3P");
   Serial1.print(outputs[3]);
-  Serial1.print("S");
+  Serial1.print("T");
   Serial1.println(duration);
   
   Serial1.end();
@@ -116,6 +134,8 @@ void setTunings(int tunings[]){
 	Info	: This function compute the inverse kinematics and update the 
 			  joint space config array.
 */
+
+
 void getConfiguration(float x, float y, float z, float *Configuration){
 	// Function performs inverse kinematics to determine configuration necessary to position cutting point of claw 
 	//  at point input to coordinates. Coordinates are stored at array *Configuration, which is recommended to be
@@ -124,6 +144,8 @@ void getConfiguration(float x, float y, float z, float *Configuration){
 	//TODO: remove this part 
 	//setTunings();
 
+		z += -3.5; 
+	
 	// Loads target position with coordinates
 	targetPos[0] = x;
 	targetPos[1] = y;
@@ -198,9 +220,8 @@ void getConfiguration(float x, float y, float z, float *Configuration){
 	Configuration[1] = RADTODEG*shoulderAngle;
 	Configuration[2] = RADTODEG*elbowAngle;
 	Configuration[3] = RADTODEG*wristAngle;  
-			
-	} 
-  
+	
+	}
 }
 
 /*
@@ -212,7 +233,7 @@ void getConfiguration(float x, float y, float z, float *Configuration){
 			  
 */
 void toCane(float x, float y, float z){
-	Serial.println("You called me- to cane");
+	
 	// Robotic arm has been calibrated for radial positional accuracy on the plane comprised of the surface of the board
 	//  emperically found to be z=-4 with respect to the coordinates of the base of the robotic arm
 	// Any cane that is to be pulled must have its x and y coordinates transformed based on the calibration
@@ -263,7 +284,7 @@ void toPoint(float x, float y, float z){
 	getConfiguration(x, y, z, targetConfig);
 	
 	duration = getDuration();
-	toConfiguration(targetConfig, 200);
+	toConfiguration(targetConfig, 500);
 	
 	delay(duration);
 	
@@ -418,8 +439,8 @@ void cutSequenceY(float x, float y, float z, float dist){
 void toReady(void){
   
   targetConfig[0] = 90;
-  targetConfig[1] = 135;
-  targetConfig[2] = 135;
+  targetConfig[1] = 110;
+  targetConfig[2] = 80;
   targetConfig[3] = 90;
 
   toConfiguration(targetConfig, 500);
@@ -428,24 +449,24 @@ void toReady(void){
 
 void depositItem(void){
 
-  targetConfig[0] = 190;
-  targetConfig[1] = 150;
-  targetConfig[2] = 137;
-  targetConfig[3] = 90;
+  targetConfig[0] = 70;
+  targetConfig[1] = 90;
+  targetConfig[2] = 70;
+  targetConfig[3] = 45;
   
-  toConfiguration(targetConfig, 750);
+  toConfiguration(targetConfig, 500);
   delay(750);
   openClaw();
 }
 
 void toFetal(void){
   
-  targetConfig[0] = 90;
-  targetConfig[1] = 180;
-  targetConfig[2] = 150;
-  targetConfig[3] = 0;
+  targetConfig[0] = 110;
+  targetConfig[1] = 90;
+  targetConfig[2] = 140;
+  targetConfig[3] = 180;
 
-  toConfiguration(targetConfig, 250);
+  toConfiguration(targetConfig, 500);
 }
 
 /*
@@ -536,7 +557,8 @@ void commandMode(void){
 	Serial.println("5 - Close Claw");
 	Serial.println("6 - Print Current Configuration    (DOES NOT REFLECT WRITES TO INDIVIDUAL MOTORS)");
 	Serial.println("7 - Print Current Position         (DOES NOT REFLECT WRITES TO INDIVIDUAL MOTORS)");
-	 
+	Serial.println("8 - Deposit Item");
+
 	int cmd;
 	
 	while(1){
@@ -565,9 +587,14 @@ void commandMode(void){
 		if(cmd==7){
 			Serial.print("\n");
 			printPosition();
+			}
+		if (cmd==8){depositItem();}
+		if (cmd==9){
+			depositItem();
 		}
 		
-		if(cmd>7){Serial.println("Please enter a Valid Command");}
+		
+		if(cmd>8){Serial.println("Please enter a Valid Command");}
 			
 	}
 	
@@ -635,9 +662,12 @@ void sendPosition(void){
 	Serial.println(point[2]);
 	Serial.println("");
 	
-	facePoint(point[0], point[1], point[2]);
-	toCane(point[0], point[1], point[2]);
-	//toPoint(point[0], point[1], point[2]);
+	//facePoint(point[0], point[1], point[2]);
+	//toCane(point[0], point[1], point[2]);
+	toPoint(point[0], point[1], point[2]);
+	
+	delay(750);
+	closeClaw();
 	
 }
 
@@ -719,3 +749,46 @@ void printPosition(void){
 	
 }
 
+
+void servoAdj(void){
+	// Prompts User for details necessary to adjust servo.
+
+	float pointy[3]; 
+	
+	Serial.println("Enter servo inputs as prompted:");
+	
+	Serial.print("Pin Number:        ");
+	pointy[0] = getCoordinate();
+	Serial.println(pointy[0]);
+	
+	Serial.print("Angle Position (microseimens):        ");
+	pointy[1] = getCoordinate();
+	Serial.println(pointy[1]);
+	
+	Serial.print("Time limit (ms):        ");
+	pointy[2] = getCoordinate();
+	Serial.println(pointy[2]);
+	Serial.println("");
+  Serial1.print("#");
+  Serial1.print(pointy[0]);
+  Serial1.print("P");
+  Serial1.print(pointy[1]);
+  Serial1.print("T");
+  Serial1.println(pointy[2]);
+  Serial1.end();
+  Serial.print("Mission Accomplished.");
+
+}
+
+void servoAdjman(int pinNum, int servoAng, int timeLim){
+	// Prompts User for details necessary to adjust servo.
+  Serial1.print("#");
+  Serial1.print(pinNum);
+  Serial1.print("P");
+  Serial1.print(servoAng);
+  Serial1.print("T");
+  Serial1.println(timeLim);
+  Serial1.end();
+  Serial.print("Mission Accomplished.");
+
+}
