@@ -443,7 +443,7 @@ void toReady(void){
   targetConfig[2] = 80;
   targetConfig[3] = 90;
 
-  toConfiguration(targetConfig, 500);
+  toConfiguration(targetConfig, 1400);
   openClaw();
 }
 
@@ -469,6 +469,16 @@ void toFetal(void){
   toConfiguration(targetConfig, 500);
 }
 
+void toBasket(){
+  targetConfig[0] = 60;
+  targetConfig[1] = 110;
+  targetConfig[2] = 100;
+  targetConfig[3] = 10;
+  
+  toConfiguration(targetConfig, 500);
+  delay(750);
+  openClaw();
+}
 /*
 	Function: updatePos 
 	Param	: Output Cartesian Spatial Coordinates array, joint space config array
@@ -558,6 +568,7 @@ void commandMode(void){
 	Serial.println("6 - Print Current Configuration    (DOES NOT REFLECT WRITES TO INDIVIDUAL MOTORS)");
 	Serial.println("7 - Print Current Position         (DOES NOT REFLECT WRITES TO INDIVIDUAL MOTORS)");
 	Serial.println("8 - Deposit Item");
+	Serial.println("9 - to basket");
 
 	int cmd;
 	
@@ -590,7 +601,7 @@ void commandMode(void){
 			}
 		if (cmd==8){depositItem();}
 		if (cmd==9){
-			depositItem();
+			toBasket();
 		}
 		
 		
