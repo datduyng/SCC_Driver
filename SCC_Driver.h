@@ -2,26 +2,39 @@
 // AUTHOR: Lukas Renker
 
 //  PURPOSE: This library is to facilitate easy use of the Lynxmotion AL5D, 4 DOF
-//  robotic arm. 
+//  robotic arm.
 //
 //  The first category of functions allow for the conversion of convenient angle arguments to the format
 //  necessary to write to the SCC-32 servo driver board (toConfiguration). Function getConfiguration
-//  performs inverse kinematics to write the arm to a specific end-effector position. The two are 
-//  in sequence using the toPoint function, for quick use. The followLine function breaks down the 
-//  path between two points, and it moves the end effector in a straight line path from one to 
-//  the next. 
-//  
-//  In order to facilitate troubleshooting and calibration, the sendCommand and printConfig functions 
+//  performs inverse kinematics to write the arm to a specific end-effector position. The two are
+//  in sequence using the toPoint function, for quick use. The followLine function breaks down the
+//  path between two points, and it moves the end effector in a straight line path from one to
+//  the next.
+//
+//  In order to facilitate troubleshooting and calibration, the sendCommand and printConfig functions
 //  allow for sending and receiving of coordinates through the serial monitor.
 
 #ifndef SCC_DRIVER_H   /* Include guard */
 #define SCC_DRIVER_H
 
 // Robotic arm link lengths
+//Set 1 
 //#define L2 7.375
-#define L2 5.875
-#define L3 9.375
-#define L4 4.65
+
+//Set 2; 
+//L2: 7.375 
+//L3: 9.375
+//L4: 4.25
+
+//set 3;
+//#define L2 5.78125
+//#define L3 9.3125
+//#define L4 4.5
+
+//set4
+#define L2 5.7578125
+#define L3 9.2955
+#define L4 4.2700
 
 // Scaling coefficients used in polynomial regression for calibration of arm
 
@@ -32,7 +45,7 @@
 #define P4  0.431456
 #define P5  -4.47091
 #define P6  25.7167
-#define P7  -55.9275 
+#define P7  -55.9275
 
 // WHEN CLAW IS IN USE
 //#define P1  -0.0000101049
@@ -49,7 +62,7 @@
 #define RADTODEG 57.295779513
 #define DEGTORAD (1/57.295779513)
 
-// Speed of arm 
+// Speed of arm
 #define IPS 5
 
 extern float currConfig[4];
