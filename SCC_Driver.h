@@ -32,9 +32,16 @@
 //#define L4 4.5
 
 //set4
+//#define L2 5.7578125
+//#define L3 9.2955
+//#define L4 4.2700
+//--------------------------------------
+//New linkage:
 #define L2 5.7578125
-#define L3 9.2955
+#define L3 7.3575
+// old gripper #define L4 4.2700  3.9810
 #define L4 4.2700
+
 
 // Scaling coefficients used in polynomial regression for calibration of arm
 

@@ -70,7 +70,13 @@ void toConfiguration(float angles[], int duration){
   //outputs[2] = (830 +  angles[2]*(2500-840)/180);//343:1700 : 97/:830   divide by 110 was 120 with 90
   //outputs[3] = (540 + angles[3]*(2500-545)/180);//580;0----0
 
-  //TODO: Change 1 and 2 
+  //set 4 
+  //outputs[0] = (470 + angles[0]*(2265-500)/180);//(500,2265)
+  //outputs[1] = (710 + angles[1]*(2365-660)/180);// (1000,1800)......(2270,2225) was 970 with 90
+  //outputs[2] = (830 +  angles[2]*(2500-840)/180);//343:1700 : 97/:830   divide by 110 was 120 with 90
+  //outputs[3] = (540 + angles[3]*(2500-545)/180);//580;0----0
+  
+  //set 5 
   outputs[0] = (470 + angles[0]*(2265-500)/180);//(500,2265)
   outputs[1] = (710 + angles[1]*(2365-660)/180);// (1000,1800)......(2270,2225) was 970 with 90
   outputs[2] = (830 +  angles[2]*(2500-840)/180);//343:1700 : 97/:830   divide by 110 was 120 with 90
@@ -145,7 +151,10 @@ void getConfiguration(float x, float y, float z, float *Configuration){
 	//TODO: remove this part
 	//setTunings();
 
-		z += -3.5;
+		z += -4.6;
+		y += -0.4;
+		x += -0.25;
+
 
 	// Loads target position with coordinates
 	targetPos[0] = x;
@@ -444,12 +453,18 @@ void toReady(void){
   //targetConfig[2] = 80;
   //targetConfig[3] = 90;
 
-//calibration
+//calibration 1
    targetConfig[0] = 90;
   targetConfig[1] = 110;
   targetConfig[2] = 80;
   targetConfig[3] = 90;
 
+  //calib 2
+  //targetConfig[0] = 90;
+  //targetConfig[1] = 90;
+  //targetConfig[2] = 90;
+  //targetConfig[3] = 90;
+  
   toConfiguration(targetConfig, 1400);
   openClaw();
 }
@@ -459,7 +474,7 @@ void depositItem(void){
   targetConfig[0] = 70;
   targetConfig[1] = 90;
   targetConfig[2] = 70;
-  targetConfig[3] = 45;
+  targetConfig[3] = 20;
 
   toConfiguration(targetConfig, 500);
   delay(750);
@@ -535,10 +550,10 @@ int getDuration(void){
 // CLAW USAGE ----------------------------------------------------------------------------------------------------//
 
 void closeClaw(void){
-
+//Serial1.print(1450); first gripper
 	Serial1.begin(115200);
 	Serial1.print("#4P");
-    Serial1.print(1450);
+    Serial1.print(1970);
     Serial1.print("T");
     Serial1.println(100);
 	delay(500);
@@ -550,7 +565,7 @@ void openClaw(void){
 
 	Serial1.begin(115200);
 	Serial1.print("#4P");
-    Serial1.print(1250);
+    Serial1.print(1650);
     Serial1.print("T");
     Serial1.println(100);
 	delay(500);
