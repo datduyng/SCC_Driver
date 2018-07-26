@@ -17,31 +17,19 @@
 #ifndef SCC_DRIVER_H   /* Include guard */
 #define SCC_DRIVER_H
 
-// Robotic arm link lengths
-//Set 1 
-//#define L2 7.375
-
-//Set 2; 
-//L2: 7.375 
-//L3: 9.375
-//L4: 4.25
-
-//set 3;
-//#define L2 5.78125
-//#define L3 9.3125
-//#define L4 4.5
-
-//set4
-//#define L2 5.7578125
-//#define L3 9.2955
-//#define L4 4.2700
-//--------------------------------------
-//New linkage:
-#define L2 5.7578125
-#define L3 7.3575
-// old gripper #define L4 4.2700  3.9810
-#define L4 4.2700
-
+// #ifdef botConst1 
+// 	//New linkage:
+// 	 float  const L2 = 5.7578125f;
+// 	const float L3 = 7.3575f;
+// 	// old gripper #define L4 4.2700  3.9810
+// 	const float L4 = 4.2700f;
+// #elif botConst2
+// 		//New linkage:
+// 	const float L2 =  5.7578125f;
+// 	const float L3 = 7.3575f;
+// 	// old gripper #define L4 4.2700  3.9810
+// 	const float L4 =4.2700f;
+// #endif
 
 // Scaling coefficients used in polynomial regression for calibration of arm
 
@@ -109,6 +97,8 @@ void printPosition(void);
 void sendPosition(void);
 float getCoordinate(void);
 int getCommand(void);
+void servoAdj(void);
+void servoAdjman(int pinNum, int servoAng, int timeLim);
 
 
 #endif

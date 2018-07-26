@@ -3,6 +3,7 @@
 #include "math.h"
 #include "stdlib.h"
 #include "stdint.h"
+#include<botConst.h>
 
   // Servo Motors have different standard control signals. Converting input angles to servo signals
   //  requires control singal range information for each servo in the Lynxmotion AL5D 4-DOF arm.
@@ -44,6 +45,15 @@ int duration;
  *			  and send off the command into SCC-32U servo drive. It also update
  *			  the current configuration array
  */
+
+#define PWM_PER_DEG_BASE (2265-500)/180
+#define PWM_PER_DEG_SHOULDER (2365-660)/180
+#define PWM_PER_DEG_ELBOW (2500-840)/180
+#define PWM_PER_DEG_WRIST (2500-545)/180
+#define PWM_BASE_OFFSET 470
+#define PWM_SHOULDER_OFFSET 680
+#define PWM_ELBOW_OFFSET 830
+#define PWM_WRIST_OFFSET 540
 void toConfiguration(float angles[], int duration){
 
   int outputs[5];
@@ -52,35 +62,11 @@ void toConfiguration(float angles[], int duration){
 		the equation convert the joint space into actuator space, from degree to microsecond
 		adjust the first value to off set the servo rotation
 	*/
-	//set 1
-  // outputs[0] = (560 + angles[0]*(2220-500)/180);//(500,2265)
-  // outputs[1] = (750 + angles[1]*(1600-750)/90);
-  // outputs[2] = (600 + angles[2]*(1700-830)/90);
-  // outputs[3] = (1010 + angles[3]*(2475-660)/180);//1010
 
-    //set 2
-  //outputs[0] = (500 + angles[0]*(2265-500)/180);//(500,2265)
-  //outputs[1] = (1370 + angles[1]*(1800-1000)/180);// (1000,1800)......(2270,2225) was 970 with 90
-  //outputs[2] = (1050 +  angles[2]*(1700-500)/180);//343:1700 : 97/:830   divide by 110 was 120 with 90
-  //outputs[3] = (540 + angles[3]*(2500-555)/180);//580;0----0
-
-  //set3
-  //outputs[0] = (500 + angles[0]*(2265-500)/180);//(500,2265)
-  //outputs[1] = (710 + angles[1]*(2365-660)/180);// (1000,1800)......(2270,2225) was 970 with 90
-  //outputs[2] = (830 +  angles[2]*(2500-840)/180);//343:1700 : 97/:830   divide by 110 was 120 with 90
-  //outputs[3] = (540 + angles[3]*(2500-545)/180);//580;0----0
-
-  //set 4 
-  //outputs[0] = (470 + angles[0]*(2265-500)/180);//(500,2265)
-  //outputs[1] = (710 + angles[1]*(2365-660)/180);// (1000,1800)......(2270,2225) was 970 with 90
-  //outputs[2] = (830 +  angles[2]*(2500-840)/180);//343:1700 : 97/:830   divide by 110 was 120 with 90
-  //outputs[3] = (540 + angles[3]*(2500-545)/180);//580;0----0
-  
-  //set 5 
-  outputs[0] = (470 + angles[0]*(2265-500)/180);//(500,2265)
-  outputs[1] = (710 + angles[1]*(2365-660)/180);// (1000,1800)......(2270,2225) was 970 with 90
-  outputs[2] = (830 +  angles[2]*(2500-840)/180);//343:1700 : 97/:830   divide by 110 was 120 with 90
-  outputs[3] = (540 + angles[3]*(2500-545)/180);//580;0----0
+  outputs[0] = (PWM_BASE_OFFSET + angles[0]*PWM_PER_DEG_BASE);//(500,2265)
+  outputs[1] = (PWM_SHOULDER_OFFSET + angles[1]*PWM_PER_DEG_SHOULDER);// (1000,1800)......(2270,2225) was 970 with 90
+  outputs[2] = (PWM_ELBOW_OFFSET +  angles[2]*PWM_PER_DEG_ELBOW);//343:1700 : 97/:830   divide by 110 was 120 with 90
+  outputs[3] = (PWM_WRIST_OFFSET + angles[3]*PWM_PER_DEG_WRIST);//580;0----0
 
 
   // Note the format of the data being written to the Servo driver board should appear like so:
@@ -150,11 +136,36 @@ void getConfiguration(float x, float y, float z, float *Configuration){
 
 	//TODO: remove this part
 	//setTunings();
+	z += -4.0;
 
-		z += -4.6;
-		y += -0.4;
-		x += -0.25;
+	#ifdef botConst1 
+		if  (x>0) x += -0.3;
+		else x += -1.0;
 
+
+        if(y>2 && x>0){
+			x += 0.7;
+			y += -1.2;
+		}else{ 
+			x += +1.0;
+			y += -0.6;
+		}
+	#elif botConst2 
+					if  (x>0) x += -0.3;
+		else x += -1.0;
+
+
+        if(y>2 && x>0){
+			x += 0.7;
+			y += -1.2;
+		}else{ 
+			x += +1.0;
+			y += -0.6;
+		}
+	#else 
+		// Dont delete these lin 
+		// You need to define botConst1 or botConst2
+	#endif
 
 	// Loads target position with coordinates
 	targetPos[0] = x;
@@ -454,14 +465,14 @@ void toReady(void){
   //targetConfig[3] = 90;
 
 //calibration 1
-   targetConfig[0] = 90;
+  targetConfig[0] = 90;
   targetConfig[1] = 110;
   targetConfig[2] = 80;
-  targetConfig[3] = 90;
+ targetConfig[3] = 90;
 
   //calib 2
-  //targetConfig[0] = 90;
-  //targetConfig[1] = 90;
+ //targetConfig[0] = 90;
+ //targetConfig[1] = 90;
   //targetConfig[2] = 90;
   //targetConfig[3] = 90;
   
@@ -483,7 +494,7 @@ void depositItem(void){
 
 void toFetal(void){
 
-  targetConfig[0] = 110;
+  targetConfig[0] = 125;
   targetConfig[1] = 90;
   targetConfig[2] = 140;
   targetConfig[3] = 180;
